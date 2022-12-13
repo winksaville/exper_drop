@@ -1,20 +1,24 @@
-#[derive(Debug, PartialEq)]
-pub struct HasDrop;
+#[derive(Debug)]
+pub struct HasDrop {
+    pub name: String,
+}
 
 impl Drop for HasDrop {
     fn drop(&mut self) {
-        println!("Dropping HasDrop!");
+        println!("Dropping {}", self.name);
     }
 }
 
+#[derive(Debug)]
 pub struct HasTwoDrops {
+    pub name: String,
     pub one: HasDrop,
     pub two: HasDrop,
 }
 
 impl Drop for HasTwoDrops {
     fn drop(&mut self) {
-        println!("Dropping HasTwoDrops!");
+        println!("Dropping {}", self.name);
     }
 }
 
@@ -24,7 +28,17 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let x = HasTwoDrops { one: HasDrop, two: HasDrop };
-        assert_eq!(x.one, x.two);
+        let x = HasTwoDrops {
+            name: "HasTwoDrops".to_owned(),
+            one: HasDrop {
+                name: "one".to_owned(),
+            },
+            two: HasDrop {
+                name: "two".to_owned(),
+            },
+        };
+        assert_eq!(x.name, "HasTwoDrops");
+        assert_eq!(x.one.name, "one");
+        assert_eq!(x.two.name, "two");
     }
 }
